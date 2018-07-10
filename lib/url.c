@@ -115,6 +115,7 @@ bool curl_win32_idn_to_ascii(const char *in, char **out);
 #include "socks.h"
 #include "curl_rtmp.h"
 #include "gopher.h"
+#include "nbd.h"
 #include "http_proxy.h"
 #include "conncache.h"
 #include "multihandle.h"
@@ -241,6 +242,10 @@ static const struct Curl_handler * const protocols[] = {
   &Curl_handler_rtmpte,
   &Curl_handler_rtmps,
   &Curl_handler_rtmpts,
+#endif
+
+#ifndef CURL_DISABLE_NBD
+  &Curl_handler_nbd,
 #endif
 
   (struct Curl_handler *) NULL
@@ -4199,6 +4204,10 @@ static unsigned int get_protocol_family(unsigned int protocol)
   case CURLPROTO_SMB:
   case CURLPROTO_SMBS:
     family = CURLPROTO_SMB;
+    break;
+
+  case CURLPROTO_NBD:
+    family = CURLPROTO_NBD;
     break;
 
   default:
